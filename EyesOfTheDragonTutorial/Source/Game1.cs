@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using XRpgLibrary.Source;
+using XRpgLibrary.Source.States;
+using EyesOfTheDragonTutorial.Source.States;
 #endregion
 
 namespace EyesOfTheDragonTutorial.Source
@@ -17,15 +19,47 @@ namespace EyesOfTheDragonTutorial.Source
     /// </summary>
     public class Game1 : Game
     {
+        #region XNA fields
+        
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public SpriteBatch SpriteBatch;
+        
+        #endregion
 
-        public Game1() : base()
+        #region Game state fields
+
+        GameStateManager stateManager;
+
+        public TitleScreen TitleScreen;
+
+        #endregion
+
+        #region Screen fields
+
+        const int screenWidth = 1024;
+        const int screenHeight = 768;
+
+        public readonly Rectangle ScreenBounds;
+
+        #endregion
+
+        public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
+
+            ScreenBounds = new Rectangle(0, 0, screenWidth, screenHeight);
+
             Content.RootDirectory = "Content";
 
             Components.Add(new InputHandler(this));
+
+            stateManager = new GameStateManager(this);
+            Components.Add(stateManager);
+
+            TitleScreen = new TitleScreen(this, stateManager);
+            stateManager.ChangeState(TitleScreen);
         }
 
         /// <summary>
@@ -48,7 +82,7 @@ namespace EyesOfTheDragonTutorial.Source
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
         }
